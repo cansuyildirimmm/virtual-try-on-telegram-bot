@@ -48,5 +48,42 @@ This project demonstrates the integration of **Generative AI**, **automation wor
 
 ---
 
-## 📂 Repository Structure
+# 🇹🇷 TÜRKÇE
+
+## 📌 Proje Açıklaması
+**Virtual Try-On Telegram Bot**, kullanıcıların Telegram üzerinden yalnızca bir kıyafet fotoğrafı ve kısa bir açıklama göndererek **sanal kıyafet denemesi** yapmasını sağlayan yapay zekâ destekli bir sistemdir.
+
+Bot, **n8n workflow’u** üzerinden gelen görseli işler, **Replicate AI modellerini** kullanarak kıyafeti önceden tanımlanmış bir insan modeli üzerine uygular ve üretilen sonucu otomatik olarak kullanıcıya geri gönderir.
+
+Bu proje; **Generative AI**, **otomasyon workflow’ları** ve **sohbet tabanlı kullanıcı etkileşiminin** başarılı bir entegrasyonunu göstermektedir.
+
+---
+
+## 🚀 Özellikler
+- 📸 Telegram kullanıcılarından kıyafet fotoğrafı alma  
+- 🧠 Replicate ile yapay zekâ destekli sanal deneme  
+- 🔄 Tam otomatik n8n workflow yapısı  
+- 📝 Fotoğraf açıklamasını AI prompt olarak kullanma  
+- 🔐 Ortam değişkenleri ile güvenli API anahtarı yönetimi  
+- 🤖 Üretilen görselin Telegram üzerinden kullanıcıya gönderilmesi  
+
+---
+
+## 🧩 Nasıl Çalışır?
+1. Kullanıcı Telegram botuna bir kıyafet fotoğrafı ve açıklama gönderir  
+2. **Telegram Trigger** düğümü görseli alır  
+3. Görsel **Base64** formatına dönüştürülür  
+4. **Replicate API**, sanal deneme sonucunu üretir  
+5. Ortaya çıkan görsel kullanıcıya geri gönderilir  
+
+---
+
+## 🛠️ Kullanılan Teknolojiler
+- **n8n** – Workflow otomasyonu  
+- **Telegram Bot API** – Kullanıcı etkileşimi  
+- **Replicate API** – Yapay zekâ tabanlı görsel üretimi  
+- **JavaScript** – Veri işleme  
+- **GitHub** – Versiyon kontrolü  
+
+
 
