@@ -85,5 +85,13 @@ Bu proje; **Generative AI**, **otomasyon workflow’ları** ve **sohbet tabanlı
 - **JavaScript** – Veri işleme  
 - **GitHub** – Versiyon kontrolü  
 
+<img width="1902" height="800" alt="Ekran görüntüsü 2025-12-05 183136" src="https://github.com/user-attachments/assets/6fcd785c-996f-439c-9151-c17bdc86213a" />
+
+![WhatsApp Image 2025-12-05 at 18 35 57](https://github.com/user-attachments/assets/fbbc9060-509d-4df8-8e1f-113194c48432)
+
+![WhatsApp Image 2025-12-05 at 18 36 08](https://github.com/user-attachments/assets/14832567-733e-4460-b032-9ca6da0a4efc)
+
+
+
 
 
