@@ -85,7 +85,6 @@ Bu proje; **Generative AI**, **otomasyon workflow’ları** ve **sohbet tabanlı
 - **JavaScript** – Veri işleme  
 - **GitHub** – Versiyon kontrolü  
 
-<img width="1902" height="800" alt="Ekran görüntüsü 2025-12-05 183136" src="https://github.com/user-attachments/assets/6fcd785c-996f-439c-9151-c17bdc86213a" />
 
 
 
