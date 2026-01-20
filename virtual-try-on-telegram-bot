@@ -1,0 +1,212 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [-688, -16],
+      "id": "96a806f8-b1b1-492b-9308-1acc5353ea17",
+      "name": "Telegram Trigger",
+      "webhookId": "3b9c601b-cb28-4d7f-8d31-7f6a47885289",
+      "credentials": {
+        "telegramApi": {
+          "id": "mSsPRBsmbxGM780E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[3].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-528, -16],
+      "id": "7b30178c-00fc-4084-9d43-5c7829aa2dd0",
+      "name": "Get a file",
+      "webhookId": "d764214a-eed1-4421-ad3a-fd29dbcda42e",
+      "credentials": {
+        "telegramApi": {
+          "id": "mSsPRBsmbxGM780E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Dosya verisini (Binary) alıyoruz\nconst fileData = items[0].binary.data;\nconst mimeType = fileData.mimeType || 'image/jpeg';\n\n// 2. Replicate'in istediği formata (Base64 String) çeviriyoruz\nconst base64Image = `data:${mimeType};base64,${fileData.data}`;\n\n// 3. Caption (Prompt) bilgisini doğrudan 'Telegram Trigger' düğümünden çekiyoruz.\n// (Bu yöntem, 'undefined' hatasını kesin olarak engeller)\nconst telegramTriggerOutput = $('Telegram Trigger').first().json;\n\n// 4. Sonuçları bir sonraki düğüme (HTTP Request) gönderiyoruz\nreturn [{\n    json: {\n        image_b64: base64Image,\n        caption: telegramTriggerOutput.message.caption\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-352, -16],
+      "id": "1a3f022c-01aa-4661-8bb2-a7046c8a1262",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [-112, -224],
+      "id": "aa60c0dd-44c5-4d1e-bd76-bd1b4f7abca9",
+      "name": "Wait",
+      "webhookId": "0e886e39-7352-4fde-b92c-70a8facd08db"
+    },
+    {
+      "parameters": {
+        "url": "https://api.replicate.com/v1/predictions/128v0cdrvhrj60ctsjm9zzngtc",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token {{ $env.REPLICATE_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [128, -224],
+      "id": "8169d10a-6887-4dda-9467-d30b498015f4",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1d48f05f-f3f0-4c0a-ad82-aaa1f4527a87",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "succeeded",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [336, -224],
+      "id": "528e3dc6-7bb8-4426-a010-5101c0f9dfdd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram Trigger').first().json.message.from.id }}",
+        "file": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [576, -240],
+      "id": "b44ffd4c-c9d5-45f5-88aa-e083c1a1f3cd",
+      "name": "Send a photo message",
+      "webhookId": "3a2fe286-3707-4f52-b38b-4826bf278b54",
+      "credentials": {
+        "telegramApi": {
+          "id": "mSsPRBsmbxGM780E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.replicate.com/v1/predictions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token {{ $env.REPLICATE_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"version\": \"cuuupid/idm-vton:0513734a452173b8173e907e3a59d19a36266e55b48528559432bd21c7d7e985\",\n  \"input\": {\n    \"garm_img\": \"{{ $('Code in JavaScript').item.json.image_b64 }}\",\n    \"human_img\": \"https://replicate.delivery/pbxt/KgwTlhCMvDagRrcVzZJbuozNJ8esPqiNAIJS3eMgHrYuHmW4/KakaoTalk_Photo_2024-04-04-21-44-45.png\",\n    \"category\": \"upper_body\",\n    \"garment_des\": \"{{ $('Code in JavaScript').item.json.caption }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [-96, -16],
+      "id": "8e4d6c26-4c99-4c61-8384-17c5bdc8a105",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "8317239377",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [368, -16],
+      "id": "f500e033-f53b-4802-93e6-5472d6b951d0",
+      "name": "Send a photo message1",
+      "webhookId": "cd833e67-2f57-4c8c-ad3e-bf5f7bce9cbe",
+      "credentials": {
+        "telegramApi": {
+          "id": "mSsPRBsmbxGM780E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.urls.stream }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [128, -16],
+      "id": "3f37954e-7bb8-4654-981d-02385b67a701",
+      "name": "HTTP Request2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [[{ "node": "Get a file", "type": "main", "index": 0 }]]
+    },
+    "Get a file": {
+      "main": [[{ "node": "Code in JavaScript", "type": "main", "index": 0 }]]
+    },
+    "Code in JavaScript": {
+      "main": [[{ "node": "HTTP Request", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request": {
+      "main": [[{ "node": "HTTP Request2", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request2": {
+      "main": [[{ "node": "Send a photo message1", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false
+}
